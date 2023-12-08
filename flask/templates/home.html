@@ -1,0 +1,11 @@
+{% extends 'base.jinja2' %}
+
+{% block content %}
+<h1>Welcome To Student Management System!</h1>
+<h2>Look into a table</h2>
+<ul>
+    {% for table in tables %}
+        <li><a href="{{ url_for('table', table_name=table[0]) }}">{{ table[0] }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
