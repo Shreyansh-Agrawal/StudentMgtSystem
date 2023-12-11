@@ -6,20 +6,19 @@ from datetime import datetime, timezone
 
 
 def prompt_add_registration():
-    # lists out all courses 
+    # lists out all courses
     print("\nChoose from the list of courses given below-")
     search_all_courses()
     roll_no = student_validation.validate_roll_no()
     course_id = course_validation.validate_course_id()
 
     time = datetime.now(timezone.utc)  # current utc time
-    date_of_entry = time.strftime('%Y-%m-%d')  # yyyy-mm-dd
+    date_of_entry = time.strftime("%Y-%m-%d")  # yyyy-mm-dd
 
     try:
         roll_no = int(roll_no)
 
-        registration_controller.add_registration(
-            roll_no, course_id, date_of_entry)
+        registration_controller.add_registration(roll_no, course_id, date_of_entry)
     except ValueError:
         print("\nRoll number must be a number!")
     except Exception as e:
@@ -38,9 +37,13 @@ def prompt_search_registration():
             print(f"\nNo registration found for Roll No. {roll_no}")
             return
 
-        print(tabulate(registration, headers={'roll_no': 'Roll No.',
-                                              'course_id': 'Course ID'
-                                              }, tablefmt="rounded_outline"))
+        print(
+            tabulate(
+                registration,
+                headers={"roll_no": "Roll No.", "course_id": "Course ID"},
+                tablefmt="rounded_outline",
+            )
+        )
     except ValueError:
         print("\nRoll number must be a number!")
     except Exception as e:
@@ -54,12 +57,19 @@ def search_all_registrations():
         print("\nNo registrations found!")
         return
 
-    print(tabulate(registrations, headers={'roll_no': 'Roll No.',
-                                           'name': 'Name',
-                                           'course_id': 'Course ID',
-                                           'course_name': 'Course',
-                                           'date_of_registration': 'Date of Registration'
-                                           }, tablefmt="rounded_outline"))
+    print(
+        tabulate(
+            registrations,
+            headers={
+                "roll_no": "Roll No.",
+                "name": "Name",
+                "course_id": "Course ID",
+                "course_name": "Course",
+                "date_of_registration": "Date of Registration",
+            },
+            tablefmt="rounded_outline",
+        )
+    )
 
 
 def prompt_update_registration():
@@ -71,14 +81,14 @@ def prompt_update_registration():
         if not student:
             print("\nNo such student!")
             return
-        
+
         course_id = course_validation.validate_course_id()
         course = course_controller.get_course(course_id)
 
         if not course:
             print("\nNo such course!")
             return
-        
+
         new_course_id = input("Enter Updated Course ID: ").upper()
         new_course = course_controller.get_course(new_course_id)
 
@@ -102,7 +112,7 @@ def prompt_delete_registration():
         if not student:
             print("\nNo such student!")
             return
-        
+
         course_id = course_validation.validate_course_id()
         course = course_controller.get_course(course_id)
 

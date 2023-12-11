@@ -14,12 +14,13 @@ def get_tables():
     connection.close()
     return tables
 
-@app.route('/')
+
+@app.route("/")
 def home():
     return get_tables()
 
 
-@app.route('/table/<string:table_name>')
+@app.route("/table/<string:table_name>")
 def table(table_name):
     connection = sqlite3.connect("data.db")
     cursor = connection.cursor()
@@ -31,5 +32,5 @@ def table(table_name):
     return jsonify(data)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run()

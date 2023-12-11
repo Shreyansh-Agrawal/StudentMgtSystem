@@ -1,9 +1,9 @@
-'''This is a context manager for database connection to sqlite'''
+"""This is a context manager for database connection to sqlite"""
 import sqlite3
 
 
 class DatabaseConnection:
-    '''A class for database context manager'''
+    """A class for database context manager"""
 
     def __init__(self, host):
         self.connection = None
@@ -19,6 +19,7 @@ class DatabaseConnection:
         else:
             self.connection.commit()
             self.connection.close()
+
 
 # class DatabaseManager:
 #     _instance = None

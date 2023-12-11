@@ -7,18 +7,30 @@ from queries.registration_queries import RegistrationQueries
 # Student datatype
 Student = Dict[str, Union[str, int]]
 
+
 def create_students_table() -> None:
-    with DatabaseConnection('data.db') as connection:
+    with DatabaseConnection("data.db") as connection:
         cursor = connection.cursor()
 
         cursor.execute(StudentQueries.CREATE_TABLE)
 
 
-def add_student(roll_no: int, name: str, age: int, gender: str, phone: str, date_of_joining: str, date_of_entry: str) -> None:
-    with DatabaseConnection('data.db') as connection:
+def add_student(
+    roll_no: int,
+    name: str,
+    age: int,
+    gender: str,
+    phone: str,
+    date_of_joining: str,
+    date_of_entry: str,
+) -> None:
+    with DatabaseConnection("data.db") as connection:
         cursor = connection.cursor()
         try:
-            cursor.execute(StudentQueries.ADD_STUDENT, (roll_no, name, age, gender, phone, date_of_joining, date_of_entry))
+            cursor.execute(
+                StudentQueries.ADD_STUDENT,
+                (roll_no, name, age, gender, phone, date_of_joining, date_of_entry),
+            )
             print(f"\nStudent: {name}, Roll No: {roll_no} added!")
         except sqlite3.IntegrityError:
             print("\nRoll number already exists!")
@@ -29,11 +41,22 @@ def add_student(roll_no: int, name: str, age: int, gender: str, phone: str, date
 def get_student(roll_no: int) -> List[Student]:
     student = []
 
-    with DatabaseConnection('data.db') as connection:
+    with DatabaseConnection("data.db") as connection:
         cursor = connection.cursor()
         try:
             cursor.execute(StudentQueries.GET_STUDENT, (roll_no,))
-            student = [{'roll_no': row[0], 'name': row[1], 'age': row[2], 'gender': row[3], 'phone': row[4], 'date_of_joining': row[5], 'date_of_entry': row[6]} for row in cursor.fetchall()]
+            student = [
+                {
+                    "roll_no": row[0],
+                    "name": row[1],
+                    "age": row[2],
+                    "gender": row[3],
+                    "phone": row[4],
+                    "date_of_joining": row[5],
+                    "date_of_entry": row[6],
+                }
+                for row in cursor.fetchall()
+            ]
         except:
             print("Some error occured!")
 
@@ -43,11 +66,22 @@ def get_student(roll_no: int) -> List[Student]:
 def get_all_students() -> List[Student]:
     students = []
 
-    with DatabaseConnection('data.db') as connection:
+    with DatabaseConnection("data.db") as connection:
         cursor = connection.cursor()
         try:
             cursor.execute(StudentQueries.GET_ALL_STUDENTS)
-            students = [{'roll_no': row[0], 'name': row[1], 'age': row[2], 'gender': row[3], 'phone': row[4], 'date_of_joining': row[5], 'date_of_entry': row[6]} for row in cursor.fetchall()]
+            students = [
+                {
+                    "roll_no": row[0],
+                    "name": row[1],
+                    "age": row[2],
+                    "gender": row[3],
+                    "phone": row[4],
+                    "date_of_joining": row[5],
+                    "date_of_entry": row[6],
+                }
+                for row in cursor.fetchall()
+            ]
         except:
             print("Some error occured!")
 
@@ -55,7 +89,7 @@ def get_all_students() -> List[Student]:
 
 
 def update_student(roll_no: int, new_name: str) -> None:
-    with DatabaseConnection('data.db') as connection:
+    with DatabaseConnection("data.db") as connection:
         cursor = connection.cursor()
         try:
             cursor.execute(RegistrationQueries.ENABLE_FOREIGN_KEYS)
@@ -68,7 +102,7 @@ def update_student(roll_no: int, new_name: str) -> None:
 
 
 def delete_student(roll_no: int) -> None:
-    with DatabaseConnection('data.db') as connection:
+    with DatabaseConnection("data.db") as connection:
         cursor = connection.cursor()
         try:
             cursor.execute(RegistrationQueries.ENABLE_FOREIGN_KEYS)

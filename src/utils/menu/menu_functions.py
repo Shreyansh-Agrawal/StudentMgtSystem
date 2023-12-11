@@ -2,7 +2,7 @@ from utils.prompts import course_prompts
 from utils.prompts import student_prompts
 from utils.prompts import registration_prompts
 
-STUDENT_CHOICE = '''
+STUDENT_CHOICE = """
 Enter -
         1 - To add a Student
         2 - Search a Student with Roll Number
@@ -12,9 +12,9 @@ Enter -
         
         Press q to quit
 
-Enter your choice: '''
+Enter your choice: """
 
-COURSE_CHOICE = '''
+COURSE_CHOICE = """
 Enter -
         1 - To add a Course
         2 - Search a Course with Course ID
@@ -24,9 +24,9 @@ Enter -
         
         Press q to Quit
 
-Enter your choice: '''
+Enter your choice: """
 
-REGISTRATION_CHOICE = '''
+REGISTRATION_CHOICE = """
 Enter -
         1 - To Enroll a Student into a Course
         2 - Search Registrations for a Student
@@ -36,22 +36,23 @@ Enter -
         
         Press q to Quit
 
-Enter your choice: '''
+Enter your choice: """
+
 
 def student_menu():
     user_input = input(STUDENT_CHOICE)
 
-    while user_input != 'q':
+    while user_input != "q":
         match user_input:
-            case '1':
+            case "1":
                 student_prompts.prompt_add_student()
-            case '2':
+            case "2":
                 student_prompts.prompt_search_student()
-            case '3':
+            case "3":
                 student_prompts.search_all_students()
-            case '4':
+            case "4":
                 student_prompts.prompt_update_student()
-            case '5':
+            case "5":
                 student_prompts.prompt_delete_student()
             case _:
                 print("Wrong input! Please choose from the above given inputs...")
@@ -62,17 +63,17 @@ def student_menu():
 def course_menu():
     user_input = input(COURSE_CHOICE)
 
-    while user_input != 'q':
+    while user_input != "q":
         match user_input:
-            case '1':
+            case "1":
                 course_prompts.prompt_add_course()
-            case '2':
+            case "2":
                 course_prompts.prompt_search_course()
-            case '3':
+            case "3":
                 course_prompts.search_all_courses()
-            case '4':
+            case "4":
                 course_prompts.prompt_update_course()
-            case '5':
+            case "5":
                 course_prompts.prompt_delete_course()
             case _:
                 print("Wrong input! Please choose from the above given inputs...")
@@ -83,17 +84,17 @@ def course_menu():
 def registration_menu():
     user_input = input(REGISTRATION_CHOICE)
 
-    while user_input != 'q':
+    while user_input != "q":
         match user_input:
-            case '1':
+            case "1":
                 registration_prompts.prompt_add_registration()
-            case '2':
+            case "2":
                 registration_prompts.prompt_search_registration()
-            case '3':
+            case "3":
                 registration_prompts.search_all_registrations()
-            case '4':
+            case "4":
                 registration_prompts.prompt_update_registration()
-            case '5':
+            case "5":
                 registration_prompts.prompt_delete_registration()
             case _:
                 print("Wrong input! Please choose from the above given inputs...")

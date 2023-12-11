@@ -1,31 +1,98 @@
 import unittest
-import os
-import sqlite3
-from controllers.course_controller import create_course_table, add_course, get_course
+from unittest.mock import MagicMock, patch
+
+from controllers.course_controller import (
+    delete_course,
+    get_all_courses,
+    update_course,
+    create_course_table,
+    add_course,
+    get_course,
+)
+
 
 class TestCourseFunctions(unittest.TestCase):
+    def test_create_course_table(self):
+        with patch("controllers.course_controller.DatabaseConnection") as mock_db_connection:
+            mock_cursor = MagicMock()
+            mock_db_connection.return_value.__enter__.return_value.cursor.return_value = (
+                mock_cursor
+            )
 
-    def setUp(self):
-        self.test_db_name = 'test_data.db'
-        self.connection = sqlite3.connect(self.test_db_name)
-        self.cursor = self.connection.cursor()
-        create_course_table()
+            create_course_table()
 
-    def tearDown(self):
-        self.connection.close()
-        os.remove(self.test_db_name)
+            mock_cursor.execute.assert_called_once()
 
     def test_add_course(self):
-        add_course('CS101', 'Computer Science', 3, 'Computer Science', '2023-01-01')
-        course = get_course('CS101')
-        self.assertEqual(len(course), 1)
-        self.assertEqual(course[0]['course_name'], 'Computer Science')
+        with patch("controllers.course_controller.DatabaseConnection") as mock_db_connection:
+            mock_cursor = MagicMock()
+            mock_db_connection.return_value.__enter__.return_value.cursor.return_value = (
+                mock_cursor
+            )
 
+            add_course("CS101", "Computer Science", 3, "Computer Science", "2023-01-01")
+
+            mock_cursor.execute.assert_called_once()
     def test_get_course(self):
-        add_course('ENG101', 'English', 3, 'Language', '2023-01-01')
-        course = get_course('ENG101')
-        self.assertEqual(len(course), 1)
-        self.assertEqual(course[0]['course_discipline'], 'Language')
+        with patch("controllers.course_controller.DatabaseConnection") as mock_db_connection:
+            mock_cursor = MagicMock()
+            mock_cursor.fetchall.return_value = [
+                ("CS101", "Computer Science", 3, "Computer Science", "2023-01-01")
+            ]
+            mock_db_connection.return_value.__enter__.return_value.cursor.return_value = (
+                mock_cursor
+            )
 
-if __name__ == '__main__':
+            course = get_course("CS101")
+
+            self.assertEqual(len(course), 1)
+            self.assertEqual(course[0]["course_name"], "Computer Science")
+
+    def test_get_all_courses(self):
+        with patch(
+            "controllers.course_controller.DatabaseConnection"
+        ) as mock_db_connection:
+            mock_cursor = MagicMock()
+            mock_cursor.fetchall.return_value = [
+                ("CS101", "Computer Science", 3, "Computer Science", "2023-01-01"),
+                ("ENG101", "English", 3, "Language", "2023-01-01"),
+            ]
+            mock_db_connection.return_value.__enter__.return_value.cursor.return_value = (
+                mock_cursor
+            )
+
+            courses = get_all_courses()
+
+            self.assertEqual(len(courses), 2)
+            self.assertEqual(courses[0]["course_name"], "Computer Science")
+            self.assertEqual(courses[1]["course_discipline"], "Language")
+
+    def test_update_course(self):
+        with patch(
+            "controllers.course_controller.DatabaseConnection"
+        ) as mock_db_connection:
+            mock_cursor = MagicMock()
+            mock_db_connection.return_value.__enter__.return_value.cursor.return_value = (
+                mock_cursor
+            )
+
+            update_course("CS101", "New Computer Science")
+
+            assert mock_cursor.execute.call_count == 2
+
+    def test_delete_course(self):
+        with patch(
+            "controllers.course_controller.DatabaseConnection"
+        ) as mock_db_connection:
+            mock_cursor = MagicMock()
+            mock_db_connection.return_value.__enter__.return_value.cursor.return_value = (
+                mock_cursor
+            )
+
+            delete_course("CS101")
+
+            assert mock_cursor.execute.call_count == 2
+
+
+if __name__ == "__main__":
     unittest.main()

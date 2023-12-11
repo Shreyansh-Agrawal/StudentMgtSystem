@@ -1,9 +1,9 @@
 from cryptography.fernet import Fernet
 
-'''executed once to generate key'''
+"""executed once to generate key"""
 
 # key = Fernet.generate_key()
- 
+
 # with open('filekey.key', 'wb') as filekey:
 #    filekey.write(key)
 
@@ -13,7 +13,7 @@ def get_key():
     with open("filekey.key", "rb") as file:
         key = file.read()
         return key
-    
+
 
 # Encrypts the password
 def encrypt_password(password):

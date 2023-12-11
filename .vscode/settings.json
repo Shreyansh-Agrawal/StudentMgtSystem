@@ -10,5 +10,8 @@
     "python.testing.unittestEnabled": true,
     "python.testing.pytestArgs": [
         "tests"
+    ],
+    "python.analysis.extraPaths": [
+        "./src"
     ]
 }
