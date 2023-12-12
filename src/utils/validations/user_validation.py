@@ -41,7 +41,6 @@ def validate_user(role):
     try:
         db_pswd, db_role = credentials[0]
         decrypted_password = decrypt_password(db_pswd)
-
         if db_role != role:
             return False
         elif decrypted_password.decode() != password:

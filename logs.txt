@@ -73,3 +73,5 @@
 08-12-2023 10:49:46 INFO     admin
 08-12-2023 10:58:58 INFO     admin
 08-12-2023 10:59:16 INFO     student
+12-12-2023 14:12:40 INFO     test_user
+12-12-2023 14:13:11 INFO     test_user

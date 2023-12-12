@@ -70,7 +70,3 @@ def validate_course_discipline():
         result = validator("[A-Za-z ]{2,25}", discipline)
 
     return discipline
-
-
-if __name__ == "__main__":
-    pass

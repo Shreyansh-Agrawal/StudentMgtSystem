@@ -88,7 +88,3 @@ def validate_date_of_joining():
         result = validator("20[0-2][0-9]-[0-9]{2}-[0-9]{2}", date_of_joining)
 
     return date_of_joining
-
-
-if __name__ == "__main__":
-    validate_roll_no()
