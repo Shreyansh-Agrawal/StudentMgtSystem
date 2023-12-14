@@ -26,7 +26,7 @@ class TestUserValidations(unittest.TestCase):
         assert result == 'test role'
 
     @patch('utils.validations.user_validation.input_user_role', return_value='admin')
-    @patch('utils.validations.user_validation.validate_user')
+    @patch('utils.validations.user_validation.validate_user', side_effect=['', 'test'])
     def test_validate_role(self, moc_inp, moc_validate_user):
         result = user_validation.validate_role()
         assert result == 'admin'

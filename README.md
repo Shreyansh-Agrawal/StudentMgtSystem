@@ -132,3 +132,18 @@ todo-
 ```
 
 Have one database connection, opens when app starts, closes when app closes
+
+1. To run the tests
+```
+coverage run -m unittest
+```
+
+2. To get the coverage report
+```
+coverage report -m
+```
+
+3. To run the tests in quiet mode
+```
+coverage run -m unittest -b
+```

@@ -13,10 +13,36 @@ class TestRegistrationPrompts(unittest.TestCase):
         moc_registration_controller.add_registration.assert_called_once()
 
     @patch('utils.prompts.registration_prompts.registration_controller')
+    @patch('utils.prompts.registration_prompts.course_validation')
+    @patch('utils.prompts.registration_prompts.student_validation.validate_roll_no')
+    @patch('utils.prompts.registration_prompts.search_all_courses')
+    def test_prompt_add_registration_value_value_error(self, moc_search_all_courses, moc_student_validation, moc_course_validation, moc_registration_controller):
+        moc_student_validation.return_value = 'test_roll'
+        registration_prompts.prompt_add_registration()
+        moc_registration_controller.add_registration.assert_not_called()
+
+    # @patch('utils.prompts.registration_prompts.registration_controller')
+    # @patch('utils.prompts.registration_prompts.course_validation')
+    # @patch('utils.prompts.registration_prompts.student_validation.validate_roll_no')
+    # @patch('utils.prompts.registration_prompts.search_all_courses')
+    # def test_prompt_add_registration_value_error(self, moc_search_all_courses, moc_student_validation, moc_course_validation, moc_registration_controller):
+    #     moc_student_validation.side_effect = Exception('Test Exception')
+    #     registration_prompts.prompt_add_registration()
+    #     moc_registration_controller.add_registration.assert_not_called()
+
+    @patch('utils.prompts.registration_prompts.registration_controller')
     @patch('utils.prompts.registration_prompts.student_validation')
     def test_prompt_search_registration(self, moc_student_validation,  moc_registration_controller):
         registration_prompts.prompt_search_registration()
         moc_registration_controller.get_registration.assert_called_once()
+    
+
+    @patch('utils.prompts.registration_prompts.registration_controller')
+    @patch('utils.prompts.registration_prompts.student_validation.validate_roll_no')
+    def test_prompt_search_registration_value_error(self, moc_student_validation,  moc_registration_controller):
+        moc_student_validation.return_value = 'test_roll'
+        registration_prompts.prompt_search_registration()
+        moc_registration_controller.get_registration.assert_not_called()
     
     @patch('utils.prompts.registration_prompts.registration_controller')
     def test_search_all_registrations(self, moc_registration_controller):
@@ -33,6 +59,17 @@ class TestRegistrationPrompts(unittest.TestCase):
         registration_prompts.prompt_update_registration()
         moc_registration_controller.update_registration.assert_called_once()
 
+    @patch('utils.prompts.registration_prompts.course_validation')
+    @patch('utils.prompts.registration_prompts.student_controller')
+    @patch('utils.prompts.registration_prompts.course_controller')
+    @patch('builtins.input')
+    @patch('utils.prompts.registration_prompts.student_validation.validate_roll_no')
+    @patch('utils.prompts.registration_prompts.registration_controller')
+    def test_prompt_update_registration_value_error(self, moc_registration_controller, moc_student_validation, *mocs):
+        moc_student_validation.return_value = 'test_roll'
+        registration_prompts.prompt_update_registration()
+        moc_registration_controller.update_registration.assert_not_called()
+
     @patch('utils.prompts.registration_prompts.course_controller')
     @patch('utils.prompts.registration_prompts.course_validation')
     @patch('utils.prompts.registration_prompts.student_controller')
@@ -41,6 +78,16 @@ class TestRegistrationPrompts(unittest.TestCase):
     def test_prompt_delete_registration(self, moc_registration_controller, *mocs):
         registration_prompts.prompt_delete_registration()
         moc_registration_controller.delete_registration.assert_called_once()
+
+    @patch('utils.prompts.registration_prompts.course_controller')
+    @patch('utils.prompts.registration_prompts.course_validation')
+    @patch('utils.prompts.registration_prompts.student_controller')
+    @patch('utils.prompts.registration_prompts.student_validation.validate_roll_no')
+    @patch('utils.prompts.registration_prompts.registration_controller')
+    def test_prompt_delete_registration_value_error(self, moc_registration_controller, moc_student_validation, *mocs):
+        moc_student_validation.return_value = 'test_roll'
+        registration_prompts.prompt_delete_registration()
+        moc_registration_controller.delete_registration.assert_not_called()
 
 
 if __name__ == '__main__':
