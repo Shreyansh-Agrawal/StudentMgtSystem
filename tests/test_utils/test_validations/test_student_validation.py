@@ -36,3 +36,10 @@ class TestCourseValidation(unittest.TestCase):
     def test_validate_date_of_joining(self, moc_re, moc_validator):
         result = student_validation.validate_date_of_joining()
         assert result == '2021-01-21'
+
+class TestValidator(unittest.TestCase):
+
+    @patch('re.fullmatch', return_value=None)
+    def test_validator_fail(self, moc_re):
+        result = student_validation.validator('test pattern', 'test data')
+        assert result is False

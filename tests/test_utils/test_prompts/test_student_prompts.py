@@ -9,12 +9,26 @@ class TestStudentPrompts(unittest.TestCase):
     def test_prompt_add_student(self, moc_student_validation, moc_student_controller):
         student_prompts.prompt_add_student()
         moc_student_controller.add_student.assert_called_once()
+    
+    @patch('utils.prompts.student_prompts.student_controller')
+    @patch('utils.prompts.student_prompts.student_validation')
+    def test_prompt_add_student_error(self, moc_student_validation, moc_student_controller):
+        moc_student_validation.validate_roll_no.return_value = 'string_value'
+        student_prompts.prompt_add_student()
+        moc_student_controller.add_student.assert_not_called()
 
     @patch('utils.prompts.student_prompts.student_controller')
     @patch('utils.prompts.student_prompts.student_validation')
     def test_prompt_search_student(self, moc_student_validation,  moc_student_controller):
         student_prompts.prompt_search_student()
         moc_student_controller.get_student.assert_called_once()
+    
+    @patch('utils.prompts.student_prompts.student_controller')
+    @patch('utils.prompts.student_prompts.student_validation')
+    def test_prompt_search_student_error(self, moc_student_validation,  moc_student_controller):
+        moc_student_validation.validate_roll_no.return_value = 'string_value'
+        student_prompts.prompt_search_student()
+        moc_student_controller.get_student.assert_not_called()
     
     @patch('utils.prompts.student_prompts.student_controller')
     def test_search_all_students(self, moc_student_controller):
@@ -28,11 +42,26 @@ class TestStudentPrompts(unittest.TestCase):
         student_prompts.prompt_update_student()
         moc_student_controller.update_student.assert_called_once()
 
+    @patch('builtins.input')
+    @patch('utils.prompts.student_prompts.student_validation')
+    @patch('utils.prompts.student_prompts.student_controller')
+    def test_prompt_update_student_err(self, moc_student_controller, moc_student_validation, *mocs):
+        moc_student_validation.validate_roll_no.return_value = 'string_value'
+        student_prompts.prompt_update_student()
+        moc_student_controller.update_student.assert_not_called()
+
     @patch('utils.prompts.student_prompts.student_validation')
     @patch('utils.prompts.student_prompts.student_controller')
     def test_prompt_delete_student(self, moc_student_controller, *mocs):
         student_prompts.prompt_delete_student()
         moc_student_controller.delete_student.assert_called_once()
+
+    @patch('utils.prompts.student_prompts.student_validation')
+    @patch('utils.prompts.student_prompts.student_controller')
+    def test_prompt_delete_student_err(self, moc_student_controller, moc_student_validation):
+        moc_student_validation.validate_roll_no.return_value = 'string_value'
+        student_prompts.prompt_delete_student()
+        moc_student_controller.delete_student.assert_not_called()
 
 
 if __name__ == '__main__':

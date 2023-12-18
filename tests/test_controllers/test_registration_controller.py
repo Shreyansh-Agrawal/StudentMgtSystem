@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
+import sqlite3
 from controllers.registration_controller import (
     create_registration_table,
     add_registration,
@@ -25,6 +26,24 @@ class TestRegistrationFunctions(unittest.TestCase):
             mock_cursor = MagicMock()
             mock_db_connection.return_value.__enter__.return_value.cursor.return_value = mock_cursor
 
+            add_registration(123, 'CS101', '2023-01-01')
+
+            mock_cursor.execute.assert_called()
+
+    def test_add_registration_integrity_err(self):
+        with patch('controllers.registration_controller.DatabaseConnection') as mock_db_connection:
+            mock_cursor = MagicMock()
+            mock_db_connection.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = sqlite3.IntegrityError
+            add_registration(123, 'CS101', '2023-01-01')
+
+            mock_cursor.execute.assert_called()
+
+    def test_add_registration_operational_err(self):
+        with patch('controllers.registration_controller.DatabaseConnection') as mock_db_connection:
+            mock_cursor = MagicMock()
+            mock_db_connection.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = sqlite3.OperationalError
             add_registration(123, 'CS101', '2023-01-01')
 
             mock_cursor.execute.assert_called()
@@ -61,10 +80,50 @@ class TestRegistrationFunctions(unittest.TestCase):
 
             mock_cursor.execute.assert_called()
 
+    def test_update_registration_integrity_err(self):
+        with patch('controllers.registration_controller.DatabaseConnection') as mock_db_connection:
+            mock_cursor = MagicMock()
+            mock_db_connection.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = sqlite3.IntegrityError
+
+            update_registration(123, 'CS101', 'CS102')
+
+            mock_cursor.execute.assert_called()
+
+    def test_update_registration_operational_err(self):
+        with patch('controllers.registration_controller.DatabaseConnection') as mock_db_connection:
+            mock_cursor = MagicMock()
+            mock_db_connection.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = sqlite3.OperationalError
+
+            update_registration(123, 'CS101', 'CS102')
+
+            mock_cursor.execute.assert_called()
+
     def test_delete_registration(self):
         with patch('controllers.registration_controller.DatabaseConnection') as mock_db_connection:
             mock_cursor = MagicMock()
             mock_db_connection.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+
+            delete_registration(123, 'CS101')
+
+            mock_cursor.execute.assert_called()
+
+    def test_delete_registration_integrity_err(self):
+        with patch('controllers.registration_controller.DatabaseConnection') as mock_db_connection:
+            mock_cursor = MagicMock()
+            mock_db_connection.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = sqlite3.IntegrityError
+
+            delete_registration(123, 'CS101')
+
+            mock_cursor.execute.assert_called()
+
+    def test_delete_registration_operational_err(self):
+        with patch('controllers.registration_controller.DatabaseConnection') as mock_db_connection:
+            mock_cursor = MagicMock()
+            mock_db_connection.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = sqlite3.OperationalError
 
             delete_registration(123, 'CS101')
 
