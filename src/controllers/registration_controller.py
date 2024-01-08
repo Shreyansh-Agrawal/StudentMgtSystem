@@ -44,7 +44,7 @@ def get_registration(roll_no: int) -> List[Registration]:
         try:
             cursor.execute(RegistrationQueries.GET_REGISTRATION, (roll_no,))
             registration = [
-                {"roll_no": row[0], "course_id": row[1], "date_of_entry": row[2]}
+                {"roll_no": row[0], "course_id": row[1], "date_of_registration": row[2]}
                 for row in cursor.fetchall()
             ]
         except:
@@ -74,7 +74,6 @@ def get_all_registrations() -> List[Registration]:
             print(
                 f"\nAn error occured [get_all_registrations, registration_controller.py]\n{e}"
             )
-
     return registrations
 
 

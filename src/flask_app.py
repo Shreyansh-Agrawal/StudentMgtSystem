@@ -1,23 +1,24 @@
-from flask import Flask, jsonify, Blueprint
-# from flask_restplus import Api
-from views import course_views, registration_views, student_views
+from flask import Flask
+from flask_smorest import Api
+
+from views.course_views import blp as CourseBlueprint
+from views.registration_views import blp as RegistrationBlueprint
+from views.student_views import blp as StudentBlueprint
 
 app = Flask(__name__)
 
-app.register_blueprint(course_views.app, url_prefix='/v1')
-app.register_blueprint(registration_views.app, url_prefix='/v1')
-app.register_blueprint(student_views.app, url_prefix='/v1')
+app.config["PROPAGATE_EXCEPTIONS"] = True # propagate any exception of flask extension, propagate it to main app
+app.config["API_TITLE"] = "Student Management System REST API"
+app.config["API_VERSION"] = "v1"
+app.config["OPENAPI_VERSION"] = "3.0.3" # a standard for api documentation
+app.config["OPENAPI_URL_PREFIX"] = "/" # root of our endpoint
+app.config["OPENAPI_SWAGGER_UI_PATH"] = "/"
+app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
 
-@app.route("/")
-def home():
-    data = {
-        "endpoints": {
-            "course": ["/courses", "/courses/{course_id}"],
-            "registration": ['/registrations', '/registrations/{roll_no}'],
-            "student": ['/students', 'students/{roll_no}'],
-        }
-    }
-    return jsonify(data)
+api = Api(app) # Connects flask smorest extension to flask app
+api.register_blueprint(CourseBlueprint, url_prefix='/v1')
+api.register_blueprint(RegistrationBlueprint, url_prefix='/v1')
+api.register_blueprint(StudentBlueprint, url_prefix='/v1')
 
 
 if __name__ == '__main__':

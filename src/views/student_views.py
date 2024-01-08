@@ -1,62 +1,76 @@
+from datetime import datetime, timezone
+
+from flask_smorest import Blueprint, abort
+
 from controllers import student_controller
-from flask import jsonify, Blueprint, request
+from views.schemas import StudentSchema, StudentUpdateSchema
 
-app = Blueprint('students', __name__)
+blp = Blueprint('students', __name__)
 
 
-@app.route('/students/<string:roll_no>')
+@blp.route('/students/<string:roll_no>')
+@blp.response(200, StudentSchema)
 def get_student(roll_no):
     data = student_controller.get_student(roll_no)
     if not data:
-        return jsonify({'response': f'Student data for roll no {roll_no} not found'})
+        abort(404, message=f'Roll no {roll_no} does not exists')
 
-    return jsonify({'data': data})
+    return data[0]
 
 
-@app.route('/students')
+@blp.route('/students')
+@blp.response(200, StudentSchema(many=True))
 def get_all_students():
     data = student_controller.get_all_students()
     if not data:
-        return jsonify({'response': f'Student data not found'})
-    return jsonify({'data': data})
+        abort(404, message='No students present')
+    return data
 
 
-@app.post('/students')
-def create_student():
-    request_data = request.get_json()
-
+@blp.post('/students')
+@blp.arguments(StudentSchema)
+@blp.response(201, StudentSchema)
+def create_student(request_data):
     roll_no = request_data.get('roll_no')
     name = request_data.get('name')
     age = request_data.get('age')
     gender = request_data.get('gender')
     phone = request_data.get('phone')
     date_of_joining = request_data.get('date_of_joining')
-    date_of_entry = request_data.get('date_of_entry')
+    time = datetime.now(timezone.utc)  # current utc time
+    date_of_entry = time.strftime("%Y-%m-%d")  # yyyy-mm-dd
+    
+    data = student_controller.get_student(roll_no)
+    if data:
+        abort(400, f'Roll no {roll_no} already exists')
 
     student_controller.add_student(
             roll_no, name, age, gender, phone, date_of_joining, date_of_entry
         )
-    return request_data, 201
+    data = student_controller.get_student(roll_no)
+    return data[0]
 
 
-@app.patch('/students/<string:roll_no>')
-def update_student(roll_no):
+@blp.patch('/students/<string:roll_no>')
+@blp.arguments(StudentUpdateSchema)
+@blp.response(200, StudentSchema)
+def update_student(request_data, roll_no):
     student = student_controller.get_student(roll_no)
     if not student:
-        return jsonify({'response': f'student data not found'})
-    
-    request_data = request.get_json()
+        abort(400, message=f'Roll no {roll_no} does not exists')
+
     new_name = request_data.get('new_name')
 
     student_controller.update_student(roll_no, new_name)
-    return request_data, 200
+    data = student_controller.get_student(roll_no)
+    return data[0]
 
 
-@app.delete('/students/<string:roll_no>')
+@blp.delete('/students/<string:roll_no>')
 def delete_student(roll_no):
     student = student_controller.get_student(roll_no)
     if not student:
-        return jsonify({'response': f'student data not found'})
+        abort(400, message=f'Roll no {roll_no} does not exists')
     
     student_controller.delete_student(roll_no)
-    return jsonify({'response': 200})
+    return {'message': f'Roll no {roll_no} deleted'}
