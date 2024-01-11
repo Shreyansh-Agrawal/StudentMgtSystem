@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 
+from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint, abort
 
 from controllers import registration_controller
@@ -9,6 +10,7 @@ blp = Blueprint('registration', __name__)
 
 
 @blp.route('/registrations/<string:roll_no>')
+@jwt_required()
 @blp.response(200, RegistrationSchema)
 def get_registration(roll_no):
     data = registration_controller.get_registration(roll_no)
@@ -18,6 +20,7 @@ def get_registration(roll_no):
 
 
 @blp.route('/registrations')
+@jwt_required()
 @blp.response(200, RegistrationSchema(many=True))
 def get_all_registrations():
     data = registration_controller.get_all_registrations()
@@ -27,6 +30,7 @@ def get_all_registrations():
 
 
 @blp.post('/registrations')
+@jwt_required()
 @blp.arguments(RegistrationSchema)
 @blp.response(201, RegistrationSchema)
 def create_registration(request_data):
@@ -45,6 +49,7 @@ def create_registration(request_data):
 
 
 @blp.patch('/registrations/<string:roll_no>')
+@jwt_required()
 @blp.arguments(RegistrationUpdateSchema)
 @blp.response(200, RegistrationSchema)
 def update_registration(request_data, roll_no):
@@ -61,6 +66,7 @@ def update_registration(request_data, roll_no):
 
 
 @blp.delete('/registrations/<string:roll_no>')
+@jwt_required()
 @blp.arguments(RegistrationDeleteSchema)
 def delete_registration(request_data, roll_no):
     registration = registration_controller.get_registration(roll_no)

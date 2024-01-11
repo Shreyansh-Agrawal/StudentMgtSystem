@@ -3,6 +3,7 @@ from marshmallow import Schema, fields
 class CourseSchema(Schema):
     # define fields and how they behave in terms of input and output
     # for only returning data use dump_only=True
+    # load_only=True means only in req not in res
     # required=True means must be present in the request
     course_id = fields.Str(required=True)
     course_name = fields.Str(required=True)
@@ -44,3 +45,9 @@ class StudentSchema(Schema):
 
 class StudentUpdateSchema(Schema):
     new_name = fields.Str(required=True)
+
+
+class AuthSchema(Schema):
+    username = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True)
+    role = fields.Str()

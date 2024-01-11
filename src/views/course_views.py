@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 
+from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint, abort
 
 from controllers import course_controller
@@ -9,6 +10,7 @@ blp = Blueprint('courses', __name__)
 
 
 @blp.get('/courses/<string:course_id>')
+@jwt_required()
 @blp.response(200, CourseSchema)
 def get_course(course_id):
     data = course_controller.get_course(course_id)
@@ -19,6 +21,7 @@ def get_course(course_id):
 
 
 @blp.get('/courses')
+@jwt_required()
 @blp.response(200, CourseSchema(many=True))
 def get_all_courses():
     data = course_controller.get_all_courses()
@@ -29,6 +32,7 @@ def get_all_courses():
 
 
 @blp.post('/courses')
+@jwt_required()
 @blp.arguments(CourseSchema)
 @blp.response(201, CourseSchema)
 def create_course(request_data): # the req data gets passed thru the schema and then to this func after validation
@@ -50,6 +54,7 @@ def create_course(request_data): # the req data gets passed thru the schema and 
 
 
 @blp.patch('/courses/<string:course_id>')
+@jwt_required()
 @blp.arguments(CourseUpdateSchema)
 @blp.response(200, CourseSchema)
 def update_course(request_data, course_id):
@@ -64,6 +69,7 @@ def update_course(request_data, course_id):
 
 
 @blp.delete('/courses/<string:course_id>')
+@jwt_required()
 def delete_course(course_id):
     course = course_controller.get_course(course_id)
     if not course:
