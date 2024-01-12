@@ -1,4 +1,12 @@
+import os
+from pathlib import Path
+
 from cryptography.fernet import Fernet
+from dotenv import load_dotenv
+
+dotenv_path = Path('.env')
+load_dotenv(dotenv_path=dotenv_path)
+FILE_KEY = os.getenv('FILE_KEY')
 
 """executed once to generate key"""
 
