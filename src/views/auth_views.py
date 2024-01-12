@@ -3,10 +3,10 @@ import sqlite3
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, get_jwt, jwt_required
 from flask_smorest import Blueprint, abort
 
-from utils.rbac import ROLE_MAPPING
-from blocklist import BLOCKLIST
-from controllers import auth_controller
-from models.schemas import AuthSchema
+from src.utils.rbac import ROLE_MAPPING
+from src.blocklist import BLOCKLIST
+from src.controllers import auth_controller
+from src.models.schemas import AuthSchema
 
 blp = Blueprint('users', __name__)
 

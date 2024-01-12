@@ -1,8 +1,9 @@
 import sqlite3
-from utils.database_connection import DatabaseConnection
-from typing import List, Dict, Union
-from queries.course_queries import CourseQueries
-from queries.registration_queries import RegistrationQueries
+from typing import Dict, List, Union
+
+from src.queries.course_queries import CourseQueries
+from src.queries.registration_queries import RegistrationQueries
+from src.utils.database_connection import DatabaseConnection
 
 # Course datatype
 Course = Dict[str, Union[str, int]]

@@ -3,9 +3,9 @@ from datetime import datetime, timezone
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint, abort
 
-from controllers import registration_controller
-from models.schemas import RegistrationSchema, RegistrationUpdateSchema, RegistrationDeleteSchema
-from utils.rbac import access_level
+from src.controllers import registration_controller
+from src.models.schemas import RegistrationSchema, RegistrationUpdateSchema, RegistrationDeleteSchema
+from src.utils.rbac import access_level
 
 blp = Blueprint('registration', __name__)
 

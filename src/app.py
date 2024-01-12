@@ -6,11 +6,11 @@ from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_smorest import Api
 
-from blocklist import BLOCKLIST
-from views.auth_views import blp as AuthBlueprint
-from views.course_views import blp as CourseBlueprint
-from views.registration_views import blp as RegistrationBlueprint
-from views.student_views import blp as StudentBlueprint
+from src.blocklist import BLOCKLIST
+from src.views.auth_views import blp as AuthBlueprint
+from src.views.course_views import blp as CourseBlueprint
+from src.views.registration_views import blp as RegistrationBlueprint
+from src.views.student_views import blp as StudentBlueprint
 
 dotenv_path = Path('.env')
 load_dotenv(dotenv_path=dotenv_path)

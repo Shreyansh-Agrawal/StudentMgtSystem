@@ -4,9 +4,9 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint, abort
 
-from controllers import student_controller
-from models.schemas import StudentSchema, StudentUpdateSchema
-from utils.rbac import access_level
+from src.controllers import student_controller
+from src.models.schemas import StudentSchema, StudentUpdateSchema
+from src.utils.rbac import access_level
 
 blp = Blueprint('students', __name__)
 

@@ -3,9 +3,9 @@ from datetime import datetime, timezone
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint, abort
 
-from controllers import course_controller
-from models.schemas import CourseSchema, CourseUpdateSchema
-from utils.rbac import access_level
+from src.controllers import course_controller
+from src.models.schemas import CourseSchema, CourseUpdateSchema
+from src.utils.rbac import access_level
 
 blp = Blueprint('courses', __name__)
 

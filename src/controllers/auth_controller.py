@@ -1,8 +1,8 @@
 import sqlite3
 
-from encrypt import decrypt_password, encrypt_password
-from utils.custom_error import LoginError
-from utils.database_connection import DatabaseConnection
+from src.encrypt import decrypt_password, encrypt_password
+from src.utils.custom_error import LoginError
+from src.utils.database_connection import DatabaseConnection
 
 
 def register(user_data):

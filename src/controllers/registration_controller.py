@@ -1,8 +1,8 @@
 import sqlite3
+from typing import Dict, List, Union
 
-from utils.database_connection import DatabaseConnection
-from typing import List, Dict, Union
-from queries.registration_queries import RegistrationQueries
+from src.queries.registration_queries import RegistrationQueries
+from src.utils.database_connection import DatabaseConnection
 
 # Registration datatype
 Registration = Dict[str, Union[str, int]]
