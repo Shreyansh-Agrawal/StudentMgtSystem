@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint, abort
 
 from controllers import student_controller
-from views.schemas import StudentSchema, StudentUpdateSchema
+from models.schemas import StudentSchema, StudentUpdateSchema
 
 blp = Blueprint('students', __name__)
 
@@ -31,7 +31,7 @@ def get_all_students():
 
 
 @blp.post('/students')
-@jwt_required()
+@jwt_required(fresh=True)
 @blp.arguments(StudentSchema)
 @blp.response(201, StudentSchema)
 def create_student(request_data):
@@ -56,7 +56,7 @@ def create_student(request_data):
 
 
 @blp.patch('/students/<string:roll_no>')
-@jwt_required()
+@jwt_required(fresh=True)
 @blp.arguments(StudentUpdateSchema)
 @blp.response(200, StudentSchema)
 def update_student(request_data, roll_no):
@@ -72,7 +72,7 @@ def update_student(request_data, roll_no):
 
 
 @blp.delete('/students/<string:roll_no>')
-@jwt_required()
+@jwt_required(fresh=True)
 def delete_student(roll_no):
     student = student_controller.get_student(roll_no)
     if not student:

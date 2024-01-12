@@ -1,11 +1,11 @@
 import sqlite3
 
-from flask_jwt_extended import create_access_token, get_jwt, jwt_required
+from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, get_jwt, jwt_required
 from flask_smorest import Blueprint, abort
 
 from blocklist import BLOCKLIST
 from controllers import auth_controller
-from views.schemas import AuthSchema
+from models.schemas import AuthSchema
 
 blp = Blueprint('users', __name__)
 
@@ -28,8 +28,18 @@ def login_user(user_data):
     if not role:
         abort(401, message="Invalid Login")
     
-    access_token = create_access_token(identity=role)
-    return {"access_token": access_token}
+    access_token = create_access_token(identity=role, fresh=True)
+    refresh_token = create_refresh_token(identity=role)
+    return {"access_token": access_token, "refresh_token": refresh_token}
+
+
+# to generate a non fresh access token
+@blp.post('/refresh')
+@jwt_required(refresh=True) # it needs a refresh token not an access token
+def refresh():
+    current_user = get_jwt_identity()
+    new_access_token = create_access_token(identity=current_user, fresh=False) # if not false then refresh token will give fresh tokens!
+    return {"access_token": new_access_token}
 
 
 @blp.post('/logout')

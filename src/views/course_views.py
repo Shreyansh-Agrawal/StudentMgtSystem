@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint, abort
 
 from controllers import course_controller
-from views.schemas import CourseSchema, CourseUpdateSchema
+from models.schemas import CourseSchema, CourseUpdateSchema
 
 blp = Blueprint('courses', __name__)
 
@@ -32,7 +32,7 @@ def get_all_courses():
 
 
 @blp.post('/courses')
-@jwt_required()
+@jwt_required(fresh=True)
 @blp.arguments(CourseSchema)
 @blp.response(201, CourseSchema)
 def create_course(request_data): # the req data gets passed thru the schema and then to this func after validation
@@ -54,7 +54,7 @@ def create_course(request_data): # the req data gets passed thru the schema and 
 
 
 @blp.patch('/courses/<string:course_id>')
-@jwt_required()
+@jwt_required(fresh=True)
 @blp.arguments(CourseUpdateSchema)
 @blp.response(200, CourseSchema)
 def update_course(request_data, course_id):
@@ -69,7 +69,7 @@ def update_course(request_data, course_id):
 
 
 @blp.delete('/courses/<string:course_id>')
-@jwt_required()
+@jwt_required(fresh=True)
 def delete_course(course_id):
     course = course_controller.get_course(course_id)
     if not course:

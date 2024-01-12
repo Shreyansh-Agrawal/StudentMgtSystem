@@ -24,7 +24,7 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
     datefmt="%d-%m-%Y %H:%M:%S",
     level=logging.INFO,
-    filename="logs.txt",
+    filename="logs.log",
 )
 
 logger = logging.getLogger(__name__)
