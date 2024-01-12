@@ -1,8 +1,14 @@
-# Student Management System
+# Student Management System REST API
 
 ## Overview
 
 The Student Management System is a web application designed to streamline and manage information related to students, courses, and their results. It provides a set of RESTful APIs for performing various operations such as adding students, managing courses, and recording results.
+
+## Accessing the Application
+
+Explore the API documentation using Swagger at:
+
+[https://student-mgt-system.onrender.com/](https://student-mgt-system.onrender.com/)
 
 ## Table of Contents
 
