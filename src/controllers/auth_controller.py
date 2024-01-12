@@ -22,7 +22,6 @@ def login(user_data):
     username = user_data.get('username')
     password = user_data.get('password')
     role = user_data.get('role')
-
     with DatabaseConnection("data.db") as connection:
         cursor = connection.cursor()
         cursor.execute("SELECT password, role from users WHERE username=?", (username,))
@@ -35,6 +34,6 @@ def login(user_data):
         elif decrypted_password.decode() != password:
             return False
         else:
-            return role
+            return role, username
     except IndexError:
         return False

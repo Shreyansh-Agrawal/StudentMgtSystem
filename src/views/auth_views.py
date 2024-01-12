@@ -3,6 +3,7 @@ import sqlite3
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, get_jwt, jwt_required
 from flask_smorest import Blueprint, abort
 
+from utils.rbac import ROLE_MAPPING
 from blocklist import BLOCKLIST
 from controllers import auth_controller
 from models.schemas import AuthSchema
@@ -24,12 +25,14 @@ def register_user(user_data):
 @blp.post('/login')
 @blp.arguments(AuthSchema)
 def login_user(user_data):
-    role = auth_controller.login(user_data)
-    if not role:
+    data = auth_controller.login(user_data)
+    if not data:
         abort(401, message="Invalid Login")
-    
-    access_token = create_access_token(identity=role, fresh=True)
-    refresh_token = create_refresh_token(identity=role)
+
+    role, username = data
+    mapped_role = ROLE_MAPPING.get(role)
+    access_token = create_access_token(identity=username, fresh=True, additional_claims={'cap': mapped_role})
+    refresh_token = create_refresh_token(identity=username, additional_claims={'cap':mapped_role})
     return {"access_token": access_token, "refresh_token": refresh_token}
 
 
@@ -38,7 +41,8 @@ def login_user(user_data):
 @jwt_required(refresh=True) # it needs a refresh token not an access token
 def refresh():
     current_user = get_jwt_identity()
-    new_access_token = create_access_token(identity=current_user, fresh=False) # if not false then refresh token will give fresh tokens!
+    claims = get_jwt()
+    new_access_token = create_access_token(identity=current_user, fresh=False, additional_claims=claims.get('cap')) # if not false then refresh token will give fresh tokens!
     return {"access_token": new_access_token}
 
 

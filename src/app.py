@@ -63,11 +63,11 @@ def create_app():
 
     # for adding additional claims to jwt token
 
-    @jwt.additional_claims_loader
-    def add_claims_to_jwt(identity):
-        if identity == 'admin':
-            return {"is_admin": True}
-        return {"is_admin": False}
+    # @jwt.additional_claims_loader
+    # def add_claims_to_jwt(identity):
+    #     if identity == 'admin':
+    #         return {"is_admin": True}
+    #     return {"is_admin": False}
 
     # for jwt token error messages
     
@@ -109,4 +109,4 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
-    app.run()
+    app.run(debug=True)

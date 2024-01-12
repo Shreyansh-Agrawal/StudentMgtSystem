@@ -5,6 +5,7 @@ from flask_smorest import Blueprint, abort
 
 from controllers import registration_controller
 from models.schemas import RegistrationSchema, RegistrationUpdateSchema, RegistrationDeleteSchema
+from utils.rbac import access_level
 
 blp = Blueprint('registration', __name__)
 
@@ -20,6 +21,7 @@ def get_registration(roll_no):
 
 
 @blp.route('/registrations')
+@access_level(roles=['admin'])
 @jwt_required()
 @blp.response(200, RegistrationSchema(many=True))
 def get_all_registrations():
@@ -30,6 +32,7 @@ def get_all_registrations():
 
 
 @blp.post('/registrations')
+@access_level(roles=['admin'])
 @jwt_required(fresh=True)
 @blp.arguments(RegistrationSchema)
 @blp.response(201, RegistrationSchema)
@@ -49,6 +52,7 @@ def create_registration(request_data):
 
 
 @blp.patch('/registrations/<string:roll_no>')
+@access_level(roles=['admin'])
 @jwt_required(fresh=True)
 @blp.arguments(RegistrationUpdateSchema)
 @blp.response(200, RegistrationSchema)
@@ -66,6 +70,7 @@ def update_registration(request_data, roll_no):
 
 
 @blp.delete('/registrations/<string:roll_no>')
+@access_level(roles=['admin'])
 @jwt_required(fresh=True)
 @blp.arguments(RegistrationDeleteSchema)
 def delete_registration(request_data, roll_no):
