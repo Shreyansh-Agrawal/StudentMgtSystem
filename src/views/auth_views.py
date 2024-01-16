@@ -42,7 +42,7 @@ def login_user(user_data):
 def refresh():
     current_user = get_jwt_identity()
     claims = get_jwt()
-    new_access_token = create_access_token(identity=current_user, fresh=False, additional_claims=claims.get('cap')) # if not false then refresh token will give fresh tokens!
+    new_access_token = create_access_token(identity=current_user, fresh=False, additional_claims={'cap':claims.get('cap')}) # if not false then refresh token will give fresh tokens!
     return {"access_token": new_access_token}
 
 
