@@ -7,6 +7,7 @@ from src.utils.rbac import ROLE_MAPPING
 from src.blocklist import BLOCKLIST
 from src.controllers import auth_controller
 from src.models.schemas import AuthSchema
+from src.utils.mailgun import send_simple_message
 
 blp = Blueprint('users', __name__)
 
@@ -19,6 +20,11 @@ def register_user(user_data):
     except sqlite3.IntegrityError:
         abort(409, message='User already exists')
 
+    send_simple_message(
+        to='shreyansh.brbd@gmail.com',
+        subject='New user signup in Student Mgt System',
+        body=f'A new user with username: {user_data.get("username")} signed up!'
+    )
     return {"message": "Successfully registered"}, 201
 
 
