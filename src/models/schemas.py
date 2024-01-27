@@ -1,53 +1,45 @@
-from marshmallow import Schema, fields, validate
-
-class CourseSchema(Schema):
-    # define fields and how they behave in terms of input and output
-    # for only returning data use dump_only=True
-    # load_only=True means only in req not in res
-    # required=True means must be present in the request
-    course_id = fields.Str(required=True, validate=validate.Regexp("[A-Z0-9]{7}"))
-    course_name = fields.Str(required=True, validate=validate.Regexp("[a-zA-Z ]{5,}"))
-    course_credits = fields.Int(required=True)
-    course_discipline = fields.Str(required=True, validate=validate.Regexp("[A-Za-z ]{2,25}"))
-    date_of_entry = fields.Str(format="%Y-%m-%d", dump_only=True) # validation not working
+from pydantic import BaseModel, Field
 
 
-class CourseUpdateSchema(Schema):
-    new_course_name = fields.Str(required=True, validate=validate.Regexp("[a-zA-Z ]{5,}"))
+class CourseSchema(BaseModel):
+    course_id: str = Field(pattern='[A-Z0-9{7}]')
+    course_name: str = Field(pattern="[a-zA-Z {5,}]")
+    course_credits: int
+    course_discipline: str = Field(pattern="[A-Za-z {2,25}]")
 
 
-class RegistrationSchema(Schema):
-    roll_no = fields.Int(required=True)
-    name = fields.Str(dump_only=True, validate=validate.Regexp("[A-Za-z ]{2,25}"))
-    course_id = fields.Str(required=True, validate=validate.Regexp("[A-Z0-9]{7}"))
-    course_name = fields.Str(dump_only=True, validate=validate.Regexp("[a-zA-Z ]{5,}"))
-    date_of_registration = fields.Str(format="%Y-%m-%d", dump_only=True)
+class CourseUpdateSchema(BaseModel):
+    new_course_name: str = Field(pattern="[a-zA-Z {5,}]")
 
 
-class RegistrationUpdateSchema(Schema):
-    course_id = fields.Str(required=True, validate=validate.Regexp("[A-Z0-9]{7}"))
-    new_course_id = fields.Str(required=True, validate=validate.Regexp("[A-Z0-9]{7}"))
+class RegistrationSchema(BaseModel):
+    roll_no: int
+    course_id: str = Field(pattern="[A-Z0-9{7}]")
 
 
-class RegistrationDeleteSchema(Schema):
-    course_id = fields.Str(required=True, validate=validate.Regexp("[A-Z0-9]{7}"))
+class RegistrationUpdateSchema(BaseModel):
+    course_id: str = Field(pattern="[A-Z0-9{7}]")
+    new_course_id: str = Field(pattern="[A-Z0-9{7}]")
 
 
-class StudentSchema(Schema):
-    roll_no = fields.Int(required=True)
-    name = fields.Str(required=True, validate=validate.Regexp("^[A-Za-z ]{2,25}$"))
-    age = fields.Int(required=True)
-    gender = fields.Str(required=True, validate=validate.Regexp("[M|F]"))
-    phone = fields.Str(required=True, validate=validate.Regexp("^[1-9][0-9]{9}"))
-    date_of_joining = fields.Str(format="%Y-%m-%d", required=True)
-    date_of_entry = fields.Str(format="%Y-%m-%d", dump_only=True)
+class RegistrationDeleteSchema(BaseModel):
+    course_id: str = Field(pattern="[A-Z0-9{7}]")
 
 
-class StudentUpdateSchema(Schema):
-    new_name = fields.Str(required=True, validate=validate.Regexp("[A-Za-z ]{2,25}"))
+class StudentSchema(BaseModel):
+    roll_no: int
+    name: str = Field(pattern="^[A-Za-z {2,25}$]")
+    age: int
+    gender: str = Field(pattern="[M|F]")
+    phone: str = Field(pattern="^[1-9][0-9]{9}")
+    date_of_joining: str
 
 
-class AuthSchema(Schema):
-    username = fields.Str(required=True)
-    password = fields.Str(required=True, load_only=True)
-    role = fields.Str()
+class StudentUpdateSchema(BaseModel):
+    new_name: str = Field(pattern="[A-Za-z {2,25}]")
+
+
+class AuthSchema(BaseModel):
+    username: str
+    password: str
+    role: str

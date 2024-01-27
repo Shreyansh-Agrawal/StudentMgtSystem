@@ -1,7 +1,6 @@
 import sqlite3
 
-from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, get_jwt, jwt_required
-from flask_smorest import Blueprint, abort
+from fastapi import APIRouter, HTTPException
 
 from src.utils.rbac import ROLE_MAPPING
 from src.blocklist import BLOCKLIST
@@ -9,16 +8,15 @@ from src.controllers import auth_controller
 from src.models.schemas import AuthSchema
 from src.utils.mailgun import send_simple_message
 
-blp = Blueprint('users', __name__)
+router = APIRouter(tags=['Authentication'])
 
 
-@blp.post('/register')
-@blp.arguments(AuthSchema)
-def register_user(user_data):
+@router.post('/register')
+def register_user(user_data: AuthSchema):
     try:
-        auth_controller.register(user_data)
+        auth_controller.register(dict(user_data))
     except sqlite3.IntegrityError:
-        abort(409, message='User already exists')
+        raise HTTPException(409, 'User already exists')
 
     send_simple_message(
         to='shreyansh.brbd@gmail.com',
@@ -28,33 +26,34 @@ def register_user(user_data):
     return {"message": "Successfully registered"}, 201
 
 
-@blp.post('/login')
-@blp.arguments(AuthSchema)
-def login_user(user_data):
-    data = auth_controller.login(user_data)
+@router.post('/login')
+def login_user(user_data: AuthSchema):
+    data = auth_controller.login(dict(user_data))
     if not data:
-        abort(401, message="Invalid Login")
+        raise HTTPException(401, "Invalid Login")
 
     role, username = data
     mapped_role = ROLE_MAPPING.get(role)
-    access_token = create_access_token(identity=username, fresh=True, additional_claims={'cap': mapped_role})
-    refresh_token = create_refresh_token(identity=username, additional_claims={'cap':mapped_role})
+    # access_token = create_access_token(identity=username, fresh=True, additional_claims={'cap': mapped_role})
+    # refresh_token = create_refresh_token(identity=username, additional_claims={'cap':mapped_role})
+    access_token = None
+    refresh_token = None
     return {"access_token": access_token, "refresh_token": refresh_token}
 
 
 # to generate a non fresh access token
-@blp.post('/refresh')
-@jwt_required(refresh=True) # it needs a refresh token not an access token
+@router.post('/refresh')
 def refresh():
-    current_user = get_jwt_identity()
-    claims = get_jwt()
-    new_access_token = create_access_token(identity=current_user, fresh=False, additional_claims={'cap':claims.get('cap')}) # if not false then refresh token will give fresh tokens!
+    # current_user = get_jwt_identity()
+    # claims = get_jwt()
+    # new_access_token = create_access_token(identity=current_user, fresh=False, additional_claims={'cap':claims.get('cap')}) # if not false then refresh token will give fresh tokens!
+    new_access_token = None
     return {"access_token": new_access_token}
 
 
-@blp.post('/logout')
-@jwt_required()
+@router.post('/logout')
 def logout_user():
-    jti = get_jwt().get('jti')
+    # jti = get_jwt().get('jti')
+    jti = None
     BLOCKLIST.add(jti)
     return {'message': 'Successfully logged out'}

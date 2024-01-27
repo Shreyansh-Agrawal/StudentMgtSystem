@@ -1,83 +1,74 @@
 from datetime import datetime, timezone
 
-from flask.views import MethodView
-from flask_jwt_extended import jwt_required
-from flask_smorest import Blueprint, abort
+from fastapi import APIRouter, HTTPException
 
 from src.controllers import registration_controller
 from src.models.schemas import RegistrationSchema, RegistrationUpdateSchema, RegistrationDeleteSchema
 from src.utils.rbac import access_level
 
-blp = Blueprint('registration', __name__)
+router = APIRouter(tags=['Registration'])
 
 
-@blp.route('/registrations')
-class RegistrationList(MethodView):
-
-    @access_level(roles=['admin'])
-    @jwt_required()
-    @blp.response(200, RegistrationSchema(many=True))
-    def get(self):
-        data = registration_controller.get_all_registrations()
-        if not data:
-            abort(404, message=f'Registration data not found')
-        return data
-
-    @access_level(roles=['admin'])
-    @jwt_required(fresh=True)
-    @blp.arguments(RegistrationSchema)
-    @blp.response(201, RegistrationSchema)
-    def post(self, request_data):
-        roll_no = request_data.get('roll_no')
-        course_id = request_data.get('course_id')
-        time = datetime.now(timezone.utc)  # current utc time
-        date_of_registration = time.strftime("%Y-%m-%d")  # yyyy-mm-dd
-
-        registration = registration_controller.get_registration(roll_no)
-        if registration and registration[0].get('course_id') == course_id:
-            abort(400, message=f'Registration already exists')
-
-        registration_controller.add_registration(roll_no, course_id, date_of_registration)
-        data = registration_controller.get_registration(roll_no)
-        return data[0]
+#@access_level(roles=['admin'])
+@router.get('/registrations')
+def get_all_registrations():
+    data = registration_controller.get_all_registrations()
+    if not data:
+        raise HTTPException(404, detail=f'Registration data not found')
+    return data
 
 
-@blp.route('/registrations/<string:roll_no>')
-class Registration(MethodView):
+#@access_level(roles=['admin'])
+@router.post('/registrations')
+def add_registration(request_data: RegistrationSchema):
+    request_data = dict(request_data)
+    roll_no = request_data.get('roll_no')
+    course_id = request_data.get('course_id')
+    time = datetime.now(timezone.utc)  # current utc time
+    date_of_registration = time.strftime("%Y-%m-%d")  # yyyy-mm-dd
 
-    @jwt_required()
-    @blp.response(200, RegistrationSchema)
-    def get(self, roll_no):
-        data = registration_controller.get_registration(roll_no)
-        if not data:
-            abort(404, message=f'Registration data for roll no {roll_no} not found')
-        return data[0]
+    registration = registration_controller.get_registration(roll_no)
+    if registration and registration[0].get('course_id') == course_id:
+        raise HTTPException(400, detail=f'Registration already exists')
 
-    @access_level(roles=['admin'])
-    @jwt_required(fresh=True)
-    @blp.arguments(RegistrationUpdateSchema)
-    @blp.response(200, RegistrationSchema)
-    def patch(self, request_data, roll_no):
-        registration = registration_controller.get_registration(roll_no)
-        if not registration:
-            abort(400, message=f'Registration data for roll no {roll_no} not found')
+    registration_controller.add_registration(roll_no, course_id, date_of_registration)
+    data = registration_controller.get_registration(roll_no)
+    return data[0]
 
-        course_id = request_data.get('course_id')
-        new_course_id = request_data.get('new_course_id')
 
-        registration_controller.update_registration(roll_no, course_id, new_course_id)
-        data = registration_controller.get_registration(roll_no)
-        return data[0]
+@router.get('/registrations/{roll_no}')
+def get_registration(roll_no: int):
+    data = registration_controller.get_registration(roll_no)
+    if not data:
+        raise HTTPException(404, detail=f'Registration data for roll no {roll_no} not found')
+    return data[0]
 
-    @access_level(roles=['admin'])
-    @jwt_required(fresh=True)
-    @blp.arguments(RegistrationDeleteSchema)
-    def delete(self, request_data, roll_no):
-        registration = registration_controller.get_registration(roll_no)
-        if not registration:
-            abort(400, message=f'Registration data for roll no {roll_no} not found')
 
-        course_id = request_data.get('course_id')
-        
-        registration_controller.delete_registration(roll_no, course_id)
-        return {'message': f'Registration of {roll_no} deleted for {course_id}'}
+#@access_level(roles=['admin'])
+@router.patch('/registrations/{roll_no}')
+def update_registration(request_data: RegistrationUpdateSchema, roll_no: int):
+    request_data = dict(request_data)
+    registration = registration_controller.get_registration(roll_no)
+    if not registration:
+        raise HTTPException(400, detail=f'Registration data for roll no {roll_no} not found')
+
+    course_id = request_data.get('course_id')
+    new_course_id = request_data.get('new_course_id')
+
+    registration_controller.update_registration(roll_no, course_id, new_course_id)
+    data = registration_controller.get_registration(roll_no)
+    return data[0]
+
+
+#@access_level(roles=['admin'])
+@router.delete('/registrations/{roll_no}')
+def delete_registration(request_data: RegistrationDeleteSchema, roll_no: int):
+    request_data = dict(request_data)
+    registration = registration_controller.get_registration(roll_no)
+    if not registration:
+        raise HTTPException(400, detail=f'Registration data for roll no {roll_no} not found')
+
+    course_id = request_data.get('course_id')
+    
+    registration_controller.delete_registration(roll_no, course_id)
+    return {'message': f'Registration of {roll_no} deleted for {course_id}'}
