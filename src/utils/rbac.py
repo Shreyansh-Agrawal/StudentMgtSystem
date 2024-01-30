@@ -1,7 +1,5 @@
 from functools import wraps
-
-from flask import jsonify
-from flask_jwt_extended import get_jwt, verify_jwt_in_request
+from fastapi import HTTPException
 
 ROLE_MAPPING = {
     'admin': 1,
@@ -13,14 +11,13 @@ def access_level(roles):
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-            verify_jwt_in_request()
-            claims = get_jwt()
+            claims = kwargs.get('claims')
             mapped_roles = [ROLE_MAPPING.get(role) for role in roles]
 
             if claims["cap"] in mapped_roles:
                 return func(*args, **kwargs)
             else:
-                return jsonify(msg="Unauthorized"), 403
+                raise HTTPException(status_code=403, detail='Access denied')
         return wrapper
 
     return decorator
