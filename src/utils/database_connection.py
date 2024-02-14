@@ -1,13 +1,15 @@
 """This is a context manager for database connection to sqlite"""
 import sqlite3
 
+from utils.prompts.file_paths import FilePaths
+
 
 class DatabaseConnection:
     """A class for database context manager"""
 
     def __init__(self, host):
         self.connection = None
-        self.host = host
+        self.host = FilePaths.DB_PATH
 
     def __enter__(self):
         self.connection = sqlite3.connect(self.host)

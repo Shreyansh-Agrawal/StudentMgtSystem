@@ -6,6 +6,10 @@ name = "pypi"
 [packages]
 fastapi = {extras = ["all"], version = "*"}
 python-jose = {extras = ["cryptography"], version = "*"}
+aiofiles = "*"
+jinja2 = "*"
+pytest = "*"
+pytest-mock = "*"
 
 [dev-packages]
 

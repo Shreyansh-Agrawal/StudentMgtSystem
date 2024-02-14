@@ -1,12 +1,20 @@
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 
 from src.controllers import course_controller
 from src.models.schemas import CourseSchema, CourseUpdateSchema
 from src.utils.rbac import access_level
 
 router = APIRouter(tags=['Course'])
+templates = Jinja2Templates(directory='src/templates')
+
+
+@router.get('/')
+def home(request: Request):
+    return templates.TemplateResponse('home.html', {'request': request})
 
 
 @router.get('/courses')

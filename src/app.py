@@ -3,6 +3,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
+from starlette.staticfiles import StaticFiles
 
 from src.blocklist import BLOCKLIST
 from src.views.auth_views import router as AuthRouter
@@ -17,6 +18,12 @@ JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 
 def create_app():
     app = FastAPI()
+
+    @app.get('/health-check')
+    def health_check():
+        return {'status': 'Healthy'}
+
+    app.mount('/static', StaticFiles(directory='src/static'), name='static')
     app.include_router(AuthRouter, prefix='/v1')
     app.include_router(CourseRouter, prefix='/v1')
     app.include_router(RegistrationRouter, prefix='/v1')
