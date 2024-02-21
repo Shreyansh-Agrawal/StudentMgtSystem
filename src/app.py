@@ -26,7 +26,7 @@ def create_app():
     app.config["OPENAPI_URL_PREFIX"] = "/" # root of our endpoint
     app.config["OPENAPI_SWAGGER_UI_PATH"] = "/"
     app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
-
+    app.config["Access-Control-Allow-Origin"] = "*"
     api = Api(app) # Connects flask smorest extension to flask app
 
     app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
