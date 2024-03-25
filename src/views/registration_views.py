@@ -14,8 +14,8 @@ blp = Blueprint('registration', __name__)
 @blp.route('/registrations')
 class RegistrationList(MethodView):
 
-    @access_level(roles=['admin'])
-    @jwt_required()
+    # @access_level(roles=['admin'])
+    # @jwt_required()
     @blp.response(200, RegistrationSchema(many=True))
     def get(self):
         data = registration_controller.get_all_registrations()

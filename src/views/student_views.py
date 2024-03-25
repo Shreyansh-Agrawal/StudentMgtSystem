@@ -14,8 +14,8 @@ blp = Blueprint('students', __name__)
 @blp.route('/students')
 class StudentList(MethodView):
 
-    @access_level(roles=['admin'])
-    @jwt_required()
+    # @access_level(roles=['admin'])
+    # @jwt_required()
     @blp.response(200, StudentSchema(many=True))
     def get(self):
         data = student_controller.get_all_students()
