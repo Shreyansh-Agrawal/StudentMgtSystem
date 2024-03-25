@@ -14,7 +14,7 @@ blp = Blueprint('courses', __name__)
 @blp.route('/courses')
 class CourseList(MethodView):
     
-    @jwt_required()
+    # @jwt_required()
     @blp.response(200, CourseSchema(many=True))
     def get(self):
         data = course_controller.get_all_courses()

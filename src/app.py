@@ -3,6 +3,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_smorest import Api
 
@@ -18,7 +19,7 @@ JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 
 def create_app():
     app = Flask(__name__)
-
+    CORS(app, origins="*")
     app.config["PROPAGATE_EXCEPTIONS"] = True # propagate any exception of flask extension, propagate it to main app
     app.config["API_TITLE"] = "Student Management System REST API"
     app.config["API_VERSION"] = "v1"
@@ -26,7 +27,6 @@ def create_app():
     app.config["OPENAPI_URL_PREFIX"] = "/" # root of our endpoint
     app.config["OPENAPI_SWAGGER_UI_PATH"] = "/"
     app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
-    app.config["Access-Control-Allow-Origin"] = "*"
     api = Api(app) # Connects flask smorest extension to flask app
 
     app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
